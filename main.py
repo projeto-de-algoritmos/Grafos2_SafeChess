@@ -1,4 +1,5 @@
-from collections import deque, defaultdict
+from collections import defaultdict
+import heapq
 
 class Node:
     def __init__(self, position):
@@ -21,36 +22,38 @@ class Graph(object):
         self.add_edges()
 
     def add_edges(self):
-        for i in range(self.size):
-            for j in range(self.size)-1:
+        for i in range(self.size-1):
+            for j in range(self.size-1):
                 self.adj[(i,j)].append(self.nodes[i][j+1])
                 self.adj[(i,j+1)].append(self.nodes[i][j])
-        for j in range(self.size):
-            for i in range(self.size)-1:
                 self.adj[(j,i)].append(self.nodes[j][i+1])
                 self.adj[(j,i+1)].append(self.nodes[j][i])
             
     def insert_piece(self, position, piece):
         # Implementar para inserir o atributo 'is_black_piece' no node de posição 'position'
+        if not self.nodes[position.i][position.j].is_black_piece:    
+            self.nodes[position.i][position.j].is_black_piece = True
+            self.nodes[position.i][position.j].piece = piece
+        
+            self.fill_attacked(self.nodes[position.i][position.j])
 
-        self.fill_attacked(piece)
-
-    def fill_attacked(self, piece):
+    def fill_attacked(self, node):
         # Preenche com attacked os nós em que a posição esteja dentro dos possíveis ataques da peça 'piece'
         t
             
     def add_black_pieces(self, n_pecas):
-        #
+        # Adiciona todas as N peças pedidas
         for k in range(n_pecas):
             i, j = map(int, input().split())
             piece = input()
             self.insert_piece(0, (i, j), piece)
 
-    def start_process(self):
+    def process(self):
         king_pos = self.add_white_king()
 
         finalX, finalY = map(int, input().split())
 
+        return self.is_path_safe(king_pos, (finalX, finalY))
 
     def add_white_king(self):
         # adicionar o rei branco ao tabuleiro
@@ -62,19 +65,42 @@ class Graph(object):
 
         return ((king_posX, king_posY))
         
-
     def is_path_safe(self, start_position, end_position):
         # dijkstra modificado para encontrar o caminho mais seguro
         dijkstra()
+
+def dijkstra(graph, starting_vertex):
+    distances = {node: float('infinity') for node in graph}
+    distances[starting_vertex] = 0
+
+    pq = [(0, starting_vertex)]
+    while len(pq) > 0:
+        current_distance, current_vertex = heapq.heappop(pq)
+
+        # Nodes can get added to the priority queue multiple times. We only
+        # process a vertex the first time we remove it from the priority queue.
+        if current_distance > distances[current_vertex]:
+            continue
+
+        for neighbor, weight in graph[current_vertex].items():
+            distance = current_distance + weight
+
+            # Only consider this new path if it's better than any path we've
+            # already found.
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
+
+    return distances
 
 def main():
     size = int(input())
     
     G = Graph(size)
-    # n_pecas = int(input())
-    # G.add_black_pieces(n_pecas)
+    n_pecas = int(input())
+    G.add_black_pieces(n_pecas)
     
-    # G.start_process()    
+    print(G.process())    
 
 if __name__ == '__main__': 
     main()
