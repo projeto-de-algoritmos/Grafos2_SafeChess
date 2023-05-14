@@ -19,55 +19,61 @@ class Graph(object):
                 node = Node((i,j))
                 node_list[j] = node
             self.nodes.append(node_list)
-        self.add_edges()
+        # self.add_edges()
 
-    def add_edges(self):
-        for i in range(self.size-1):
-            for j in range(self.size-1):
-                self.adj[(i,j)].append(self.nodes[i][j+1])
-                self.adj[(i,j+1)].append(self.nodes[i][j])
-                self.adj[(j,i)].append(self.nodes[j][i+1])
-                self.adj[(j,i+1)].append(self.nodes[j][i])
+    def add_edge(self, u, v): 
+        xu, yu = u
+        xv, yv = u
+        self.adj[u].append(self.nodes[xu][yu])
+        self.adj[v].append(self.nodes[xv][yv])
+
+    # def add_edges(self):
+    #     for i in range(self.size-1):
+    #         for j in range(self.size-1):
+    #             self.adj[(i,j)].append(self.nodes[i][j+1])
+    #             self.adj[(i,j+1)].append(self.nodes[i][j])
+    #             self.adj[(j,i)].append(self.nodes[j][i+1])
+    #             self.adj[(j,i+1)].append(self.nodes[j][i])
             
-    def insert_piece(self, position, piece):
-        # Implementar para inserir o atributo 'is_black_piece' no node de posição 'position'
-        if not self.nodes[position.i][position.j].is_black_piece:    
-            self.nodes[position.i][position.j].is_black_piece = True
-            self.nodes[position.i][position.j].piece = piece
+    # def insert_piece(self, position, piece):
+    #     # Implementar para inserir o atributo 'is_black_piece' no node de posição 'position'
+    #     if not self.nodes[position.i][position.j].is_black_piece:    
+    #         self.nodes[position.i][position.j].is_black_piece = True
+    #         self.nodes[position.i][position.j].piece = piece
         
-            self.fill_attacked(self.nodes[position.i][position.j])
+    #         self.fill_attacked(self.nodes[position.i][position.j])
 
-    def fill_attacked(self, node):
-        # Preenche com attacked os nós em que a posição esteja dentro dos possíveis ataques da peça 'piece'
-        t
+    # def fill_attacked(self, node):
+    #     # Preenche com attacked os nós em que a posição esteja dentro dos possíveis ataques da peça 'piece'
+    #     t
             
-    def add_black_pieces(self, n_pecas):
-        # Adiciona todas as N peças pedidas
-        for k in range(n_pecas):
-            i, j = map(int, input().split())
-            piece = input()
-            self.insert_piece(0, (i, j), piece)
+    # def add_black_pieces(self, n_pecas):
+    #     # Adiciona todas as N peças pedidas
+    #     for k in range(n_pecas):
+    #         i, j = map(int, input().split())
+    #         piece = input()
+    #         self.insert_piece(0, (i, j), piece)
 
-    def process(self):
-        king_pos = self.add_white_king()
+    # def process(self):
+    #     king_pos = self.add_white_king()
 
-        finalX, finalY = map(int, input().split())
+    #     finalX, finalY = map(int, input().split())
 
-        return self.is_path_safe(king_pos, (finalX, finalY))
+    #     return self.is_path_safe(king_pos, (finalX, finalY))
 
-    def add_white_king(self):
-        # adicionar o rei branco ao tabuleiro
-        king_posX, king_posY = map(int, input().split())
+    # def add_white_king(self):
+    #     # adicionar o rei branco ao tabuleiro
+    #     king_posX, king_posY = map(int, input().split())
         
-        # if para verificar se é possível inserir o rei
-        if ():
-            t
+    #     # if para verificar se é possível inserir o rei
+    #     if ():
+    #         t
 
-        return ((king_posX, king_posY))
+    #     return ((king_posX, king_posY))
         
-    def is_path_safe(self, start_position, end_position):
-        # dijkstra modificado para encontrar o caminho mais seguro
-        dijkstra()
+    # def is_path_safe(self, start_position, end_position):
+    #     # dijkstra modificado para encontrar o caminho mais seguro
+    #     dijkstra()
 
 def dijkstra(graph, starting_vertex):
     distances = {node: float('infinity') for node in graph}
@@ -93,20 +99,22 @@ def dijkstra(graph, starting_vertex):
 
     return distances
 
-def create_chessboard_graph(n):
-    chessboard = Graph()
+def create_chessboard_graph(n, non_edges):
+    chessboard = Graph(n)
     positions = [(i, j) for i in range(n) for j in range(n)]
-    chessboard.add(positions)
+    # chessboard.add(positions)
 
     for position in positions:
-        i, j = position
-        neighbors = [
-            (i-1, j), (i+1, j), (i, j-1), (i, j+1),
-            (i-1, j-1), (i-1, j+1), (i+1, j-1), (i+1, j+1)
-        ]
-        valid_neighbors = [(x, y) for (x, y) in neighbors if 0 <= x < n and 0 <= y < n]
-        chessboard.add_edges_from([(position, neighbor) for neighbor in valid_neighbors])
-
+        if(position not in non_edges):
+            i, j = position
+            neighbors = [
+                (i-1, j), (i+1, j), (i, j-1), (i, j+1),
+                (i-1, j-1), (i-1, j+1), (i+1, j-1), (i+1, j+1)
+            ]
+            valid_neighbors = [(x, y) for (x, y) in neighbors if 0 <= x < n and 0 <= y < n]
+            for neighbor in valid_neighbors:
+                chessboard.add_edge(position, neighbor)
+# MODIFICAR ADD_EDGES
     return chessboard
     
 def torre_positions(x, y, n): 
@@ -205,15 +213,15 @@ def main():
 
     black_dest = tuple(map(int, input("Digite a posição de destino do rei preto (x y): ").split()))
 
-    chessboard = create_chessboard_graph(n)
+    chessboard = create_chessboard_graph(n, non_edges)
     # display_chessboard(chessboard, white_pieces, black_king, black_dest)
-
-    path = dijkstra(chessboard, white_pieces, black_king, black_dest)
-    if path is None:
-        print("Fim de Jogo: O Rei está em perigo!")
-    else:
-        print("Caminho seguro encontrado:")
-        print(path)
+    print(chessboard.__dict__)
+    # path = dijkstra(chessboard, black_king)
+    # if path is None:
+    #     print("Fim de Jogo: O Rei está em perigo!")
+    # else:
+    #     print("Caminho seguro encontrado:")
+    #     print(path)
     
     # G = Graph(size)
     # n_pecas = int(input())
