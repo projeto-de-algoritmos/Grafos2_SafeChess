@@ -96,7 +96,7 @@ def dijkstra(graph, starting_vertex):
 def create_chessboard_graph(n):
     chessboard = Graph()
     positions = [(i, j) for i in range(n) for j in range(n)]
-    chessboard.add_nodes_from(positions)
+    chessboard.add(positions)
 
     for position in positions:
         i, j = position
@@ -138,6 +138,20 @@ def peao_positions(x, y):
 def is_valid_position(x, y, n, visited):
     return x >= 0 and x < n and y >= 0 and y < n and (x,y) not in visited
 
+def get_cavalo_positions(x, y, n):
+    moves = []
+    visited = []
+    directions = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
+                  (1, -2), (1, 2), (2, -1), (2, 1)] 
+
+    for dx, dy in directions:
+        nx, ny = x + dx, y + dy
+        if is_valid_position(nx, ny, n, visited):
+            visited.append((nx, ny))
+            moves.append((nx, ny))
+
+    return moves
+
 def bispo_positions(x, y, n):
     moves = [x, y]
     directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
@@ -157,7 +171,7 @@ def bispo_positions(x, y, n):
 def main():
     n = int(input("Digite o tamanho do tabuleiro (N): "))
     white_count = int(input("Digite o número de peças do time branco: "))
-    piece_type = []
+    non_edges = []
     white_pieces = []
     for _ in range(white_count):
         x, y = map(int, input("Digite a posição da peça branca (x y): ").split())
@@ -168,19 +182,33 @@ def main():
                 "3. Cavalo"+
                 "4. Peão"
             ))
+            if(piece==1):
+                for i in torre_positions(x, y, n): 
+                    non_edges.append(i)
+            elif(piece==2): 
+                for i in bispo_positions(x, y, n): 
+                    non_edges.append(i)
+            elif(piece==3): 
+                for i in get_cavalo_positions(x, y, n):
+                    non_edges.append()
+            elif(piece==4): 
+                for i in peao_positions(x, y, n): 
+                    non_edges.append(i)
+
+            white_pieces.append((x, y))
+            non_edges.append(piece)
         except: 
             print("Entre com um número")
-        white_pieces.append((x, y))
-        piece_type.append(piece)
-
+            exit(0)
+        
     black_king = tuple(map(int, input("Digite a posição do rei preto (x y):").split()))
 
     black_dest = tuple(map(int, input("Digite a posição de destino do rei preto (x y): ").split()))
 
     chessboard = create_chessboard_graph(n)
-    display_chessboard(chessboard, white_pieces, black_king, black_dest)
+    # display_chessboard(chessboard, white_pieces, black_king, black_dest)
 
-    path = find_safe_path(chessboard, white_pieces, black_king, black_dest)
+    path = dijkstra(chessboard, white_pieces, black_king, black_dest)
     if path is None:
         print("Fim de Jogo: O Rei está em perigo!")
     else:
