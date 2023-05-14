@@ -155,7 +155,7 @@ def bispo_positions(x, y, n):
     return moves
 
 def main():
-        n = int(input("Digite o tamanho do tabuleiro (N): "))
+    n = int(input("Digite o tamanho do tabuleiro (N): "))
     white_count = int(input("Digite o número de peças do time branco: "))
     piece_type = []
     white_pieces = []
