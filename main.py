@@ -93,14 +93,105 @@ def dijkstra(graph, starting_vertex):
 
     return distances
 
+def create_chessboard_graph(n):
+    chessboard = Graph()
+    positions = [(i, j) for i in range(n) for j in range(n)]
+    chessboard.add_nodes_from(positions)
+
+    for position in positions:
+        i, j = position
+        neighbors = [
+            (i-1, j), (i+1, j), (i, j-1), (i, j+1),
+            (i-1, j-1), (i-1, j+1), (i+1, j-1), (i+1, j+1)
+        ]
+        valid_neighbors = [(x, y) for (x, y) in neighbors if 0 <= x < n and 0 <= y < n]
+        chessboard.add_edges_from([(position, neighbor) for neighbor in valid_neighbors])
+
+    return chessboard
+    
+def torre_positions(x, y, n): 
+    moves = [x, y]
+    dx, dy = x, y 
+    while(dy < n and dx<n): 
+        dy += 1
+        dx += 1
+        moves.append((x, dy))
+        moves.append((dx, y))
+
+    dx, dy = x, y 
+    while(dy > 0 and dx > 0): 
+        dy -= 1
+        dx -= 1
+        moves.append((x, dy))
+        moves.append((dx, y))
+
+    return moves
+
+def peao_positions(x, y):
+    i, j = x, y
+    moves = [
+        (i, j),(i-1, j), (i+1, j), (i, j-1), (i, j+1),
+        (i-1, j-1), (i-1, j+1), (i+1, j-1), (i+1, j+1)
+    ]
+    return moves
+
+def is_valid_position(x, y, n, visited):
+    return x >= 0 and x < n and y >= 0 and y < n and (x,y) not in visited
+
+def bispo_positions(x, y, n):
+    moves = [x, y]
+    directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+
+    for dx, dy in directions:
+        new_x, new_y = x, y
+        while True:
+            new_x += dx
+            new_y += dy
+            if is_valid_position(new_x, new_y, n, moves):
+                moves.append((new_x, new_y))
+            else:
+                break
+
+    return moves
+
 def main():
-    size = int(input())
+        n = int(input("Digite o tamanho do tabuleiro (N): "))
+    white_count = int(input("Digite o número de peças do time branco: "))
+    piece_type = []
+    white_pieces = []
+    for _ in range(white_count):
+        x, y = map(int, input("Digite a posição da peça branca (x y): ").split())
+        try: 
+            piece = int(input("Qual a peca que está nessa posicao:\n"+
+                "1. Torre"+
+                "2. Bispo"+
+                "3. Cavalo"+
+                "4. Peão"
+            ))
+        except: 
+            print("Entre com um número")
+        white_pieces.append((x, y))
+        piece_type.append(piece)
+
+    black_king = tuple(map(int, input("Digite a posição do rei preto (x y):").split()))
+
+    black_dest = tuple(map(int, input("Digite a posição de destino do rei preto (x y): ").split()))
+
+    chessboard = create_chessboard_graph(n)
+    display_chessboard(chessboard, white_pieces, black_king, black_dest)
+
+    path = find_safe_path(chessboard, white_pieces, black_king, black_dest)
+    if path is None:
+        print("Fim de Jogo: O Rei está em perigo!")
+    else:
+        print("Caminho seguro encontrado:")
+        print(path)
     
-    G = Graph(size)
-    n_pecas = int(input())
-    G.add_black_pieces(n_pecas)
+    # G = Graph(size)
+    # n_pecas = int(input())
+    # G.add_black_pieces(n_pecas)
     
-    print(G.process())    
+    # print(G.process())    
 
 if __name__ == '__main__': 
     main()
