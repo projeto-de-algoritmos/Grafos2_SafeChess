@@ -114,7 +114,7 @@ def create_chessboard_graph(n, non_edges):
             valid_neighbors = [(x, y) for (x, y) in neighbors if 0 <= x < n and 0 <= y < n]
             for neighbor in valid_neighbors:
                 chessboard.add_edge(position, neighbor)
-# MODIFICAR ADD_EDGES
+    # MODIFICAR ADD_EDGES
     return chessboard
     
 def torre_positions(x, y, n): 
