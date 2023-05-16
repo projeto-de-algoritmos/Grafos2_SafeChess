@@ -70,20 +70,20 @@ def rook_positions(position, white_pieces, n):
     moves = [position]
     dx, dy = position
 
-    while(dx > n and not is_occupied((dx, dy), white_pieces)): 
+    while(dx >= 0 and not is_occupied((dx - 1, dy), white_pieces)): 
         dx -= 1
         moves.append((dx, dy))
     dx, dy = position
-    while(dx < n and not is_occupied((dx, dy), white_pieces)): 
+    while(dx < n and not is_occupied((dx + 1, dy), white_pieces)): 
         dx += 1
         moves.append((dx, dy))
     dx, dy = position
-    while(dy < n and not is_occupied((dx, dy), white_pieces)): 
+    while(dy < n and not is_occupied((dx, dy + 1), white_pieces)): 
         dy += 1
         moves.append((dx, dy))
     dx, dy = position
-    while(dy < n and not is_occupied((dx, dy), white_pieces)): 
-        dy += 1
+    while(dy >=0 and not is_occupied((dx, dy - 1), white_pieces)): 
+        dy -= 1
         moves.append((dx, dy))
 
     return moves
@@ -104,8 +104,9 @@ def is_occupied(position, white_pieces):
 def is_valid_position(x, y, n, visited):
     return x >= 0 and x < n and y >= 0 and y < n and (x,y) not in visited
 
-def get_horse_positions(x, y, n):
-    moves = []
+def horse_positions(position, n):
+    moves = [position]
+    x, y = position
     visited = []
     directions = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
                   (1, -2), (1, 2), (2, -1), (2, 1)] 
@@ -122,22 +123,22 @@ def bishop_positions(position, white_pieces, n):
     moves = [position]
     dx, dy = position
 
-    while(dx > 0 and dy < n and not is_occupied((dx, dy), white_pieces)): 
+    while(dx >= 0 and dy < n and not is_occupied((dx - 1, dy + 1), white_pieces)): 
         dx -= 1
         dy += 1
         moves.append((dx, dy))
     dx, dy = position
-    while(dx > 0 and dy > 0 and not is_occupied((dx, dy), white_pieces)):
+    while(dx >= 0 and dy >= 0 and not is_occupied((dx - 1, dy - 1), white_pieces)):
         dx -= 1
         dy -= 1
         moves.append((dx, dy))
     dx, dy = position
-    while(dx < n and dy < n and not is_occupied((dx, dy), white_pieces)):
+    while(dx < n and dy < n and not is_occupied((dx + 1, dy + 1), white_pieces)):
         dx += 1
         dy += 1
         moves.append((dx, dy))
     dx, dy = position
-    while(dx > 0 and dy > 0 and not is_occupied((dx, dy), white_pieces)):
+    while(dx >= 0 and dy >= 0 and not is_occupied((dx + 1, dy - 1), white_pieces)):
         dx += 1
         dy -= 1
         moves.append((dx, dy))
@@ -145,7 +146,7 @@ def bishop_positions(position, white_pieces, n):
     return moves
 
 def queen_positions(position, white_pieces, n):
-    moves = []
+    moves = [position]
     rook = rook_positions(position, white_pieces, n)
     bishop = bishop_positions(position, white_pieces, n)
     moves += rook
@@ -183,7 +184,7 @@ def main():
             for i in bishop_positions(white_piece[1], white_pieces, n): 
                 non_edges.append(i)
         elif(white_piece[0]==3):
-            for i in get_horse_positions(white_piece[1], white_pieces, n):
+            for i in horse_positions(white_piece[1], n):
                 non_edges.append(i)
         elif(white_piece[0]==4):
             for i in pond_positions(white_piece[1]): 
@@ -198,16 +199,17 @@ def main():
     chessboard = create_chessboard_graph(n, non_edges)
 
     distance, path = dijkstra(chessboard, black_king)
-    response = []
-    no = black_dest
-    while(no != black_king): 
-        response.append(no)
-        no = path[no]
-    response.append(black_king)
 
-    if distance[black_dest] is float('infinity'):
-        print("Fim de Jogo: O Rei está em perigo!")
+    if distance[black_dest] == float('infinity'):
+        print("Fim de Jogo: O Rei estará em perigo!")
     else:
+        no = black_dest
+        response = []
+
+        while(no != black_king): 
+            response.append(no)
+            no = path[no]
+        response.append(black_king)
         print("\n------------------ Caminho seguro encontrado: ------------------\n")
         print(f"O rei pode chegar em segurança em {distance[black_dest]} movimentos, sendo eles:")
         print(response[::-1])
