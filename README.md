@@ -13,7 +13,10 @@
 Esse projeto tem como objetivo realizar um pequeno jogo, em que o jogador terá um tabuleiro de xadrez de tamanho alterável, onde poderá escolher a posição de algumas peças do time branco e irá visualizar um caminho seguro para o rei percorrer sem estar sob ataque dessas peças. O destino e início do caminho do rei são também definidos pelo jogador. Neste jogo as peças do time branco não poderão se mover.
 
 ## Screenshots
-Adicione 3 ou mais screenshots do projeto em funcionamento.
+![Screenshot from 2023-05-16 01-39-40](https://github.com/projeto-de-algoritmos/Grafos2_SafeChess/assets/78612945/1febe828-a0f4-46b2-80ef-982b38133835)
+![Screenshot from 2023-05-16 01-42-47](https://github.com/projeto-de-algoritmos/Grafos2_SafeChess/assets/78612945/47bd3337-3c83-406a-a954-a9bffe8f7cb5)
+![Screenshot from 2023-05-16 01-38-55](https://github.com/projeto-de-algoritmos/Grafos2_SafeChess/assets/78612945/7fd22d08-c009-4c33-bd71-d0dbf9175e70)
+![Screenshot from 2023-05-16 01-38-13](https://github.com/projeto-de-algoritmos/Grafos2_SafeChess/assets/78612945/e5a0b4b1-5a54-445a-961a-aa2784f7c554)
 
 ## Vídeo
 
