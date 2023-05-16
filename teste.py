@@ -4,10 +4,7 @@ import heapq
 class Node:
     def __init__(self, position):
         self.position = position
-        self.weigth = 1
-        # self.is_black_piece = False
-        # self.is_attacked = False
-        # self.piece = ''
+        self.weight = 1
 
 class Graph(object):
     def __init__(self, size):
@@ -55,12 +52,15 @@ class Graph(object):
 #     return distances
 def dijkstra(graph, starting_vertex):
     x, y = starting_vertex
-    distances = {node.position: float('infinity') for node_list in graph.nodes for node in node_list}
+    distances = {(node.position): float('infinity') for node_list in graph.nodes for node in node_list}
+    print(distances)
     distances[starting_vertex] = 0
+    print(distances)
 
     pq = [(0, starting_vertex)]
     while pq:
         current_distance, current_vertex = heapq.heappop(pq)
+        print(current_distance, current_vertex)
 
         if current_distance > distances[current_vertex]:
             continue
@@ -95,36 +95,45 @@ def create_chessboard_graph(n, non_edges):
                     chessboard.add_edge(position, neighbor)
     return chessboard
     
-def torre_positions(x, y, n): 
-    moves = [x, y]
-    dx, dy = x, y 
-    while(dy < n and dx<n): 
-        dy += 1
-        dx += 1
-        moves.append((x, dy))
-        moves.append((dx, y))
+def rook_positions(position, white_pieces, n): 
+    moves = [position]
+    dx, dy = position
 
-    dx, dy = x, y 
-    while(dy > 0 and dx > 0): 
-        dy -= 1
+    while(dx > n and not is_occupied((dx, dy), white_pieces)): 
         dx -= 1
-        moves.append((x, dy))
-        moves.append((dx, y))
+        moves.append((dx, dy))
+    dx, dy = position
+    while(dx < n and not is_occupied((dx, dy), white_pieces)): 
+        dx += 1
+        moves.append((dx, dy))
+    dx, dy = position
+    while(dy < n and not is_occupied((dx, dy), white_pieces)): 
+        dy += 1
+        moves.append((dx, dy))
+    dx, dy = position
+    while(dy < n and not is_occupied((dx, dy), white_pieces)): 
+        dy += 1
+        moves.append((dx, dy))
 
     return moves
 
-def peao_positions(x, y):
+def pond_positions(x, y):
     i, j = x, y
     moves = [
-        (i, j),(i-1, j), (i+1, j), (i, j-1), (i, j+1),
-        (i-1, j-1), (i-1, j+1), (i+1, j-1), (i+1, j+1)
+        (i-1, j-1), (i+1, j-1)
     ]
     return moves
+
+def is_occupied(position, white_pieces):
+    for _, pos in white_pieces:
+        if pos == position:
+            return True
+    return False
 
 def is_valid_position(x, y, n, visited):
     return x >= 0 and x < n and y >= 0 and y < n and (x,y) not in visited
 
-def get_cavalo_positions(x, y, n):
+def get_horse_positions(x, y, n):
     moves = []
     visited = []
     directions = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
@@ -138,19 +147,38 @@ def get_cavalo_positions(x, y, n):
 
     return moves
 
-def bispo_positions(x, y, n):
-    moves = [x, y]
-    directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+def bishop_positions(position, white_pieces, n):
+    moves = [position]
+    dx, dy = position
 
-    for dx, dy in directions:
-        new_x, new_y = x, y
-        while True:
-            new_x += dx
-            new_y += dy
-            if is_valid_position(new_x, new_y, n, moves):
-                moves.append((new_x, new_y))
-            else:
-                break
+    while(dx > 0 and dy < n and not is_occupied((dx, dy), white_pieces)): 
+        dx -= 1
+        dy += 1
+        moves.append((dx, dy))
+    dx, dy = position
+    while(dx > 0 and dy > 0 and not is_occupied((dx, dy), white_pieces)):
+        dx -= 1
+        dy -= 1
+        moves.append((dx, dy))
+    dx, dy = position
+    while(dx < n and dy < n and not is_occupied((dx, dy), white_pieces)):
+        dx += 1
+        dy += 1
+        moves.append((dx, dy))
+    dx, dy = position
+    while(dx > 0 and dy > 0 and not is_occupied((dx, dy), white_pieces)):
+        dx += 1
+        dy -= 1
+        moves.append((dx, dy))
+
+    return moves
+
+def rainha_positions(position, white_pieces, n):
+    moves = []
+    rook = rook_positions(position, white_pieces, n)
+    bishop = bishop_positions(position, white_pieces, n)
+    moves += rook
+    moves += bishop
 
     return moves
 
@@ -168,24 +196,26 @@ def main():
                 "3. Cavalo\n"+
                 "4. Peão\n"
             ))
-            if(piece==1):
-                for i in torre_positions(x, y, n): 
-                    non_edges.append(i)
-            elif(piece==2): 
-                for i in bispo_positions(x, y, n): 
-                    non_edges.append(i)
-            elif(piece==3): 
-                for i in get_cavalo_positions(x, y, n):
-                    non_edges.append()
-            elif(piece==4): 
-                for i in peao_positions(x, y, n): 
-                    non_edges.append(i)
 
-            white_pieces.append((x, y))
+            white_pieces.append((piece, (x, y)))
             non_edges.append((x,y))
         except: 
             print("Entre com um número")
             exit(0)
+
+    for white_piece in white_pieces:
+        if(piece==1):
+            for i in rook_positions(white_piece, white_pieces, n): 
+                non_edges.append(i)
+        elif(piece==2):
+            for i in bishop_positions(white_piece, white_pieces, n): 
+                non_edges.append(i)
+        elif(piece==3):
+            for i in get_horse_positions(white_piece, white_pieces, n):
+                non_edges.append(i)
+        elif(piece==4):
+            for i in pond_positions(white_piece): 
+                non_edges.append(i)
         
     black_king = tuple(map(int, input("Digite a posição do rei preto (x y):").split()))
 
