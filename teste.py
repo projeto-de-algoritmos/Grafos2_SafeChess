@@ -15,124 +15,67 @@ class Graph(object):
         self.nodes = []
         self.adj = defaultdict(list)
         for i in range(size):
-            node_list = defaultdict(list)
             node_list = []
             for j in range(size):
                 node = Node((i,j))
-                node_list[j] = node
-                node_list.append((i,j))
+                # node_list[j] = node
+                node_list.append(node)
+                # node_list.append((i,j))
             self.nodes.append(node_list)
-        # self.add_edges()
 
     def add_edge(self, u, v): 
         xu, yu = u
         xv, yv = v
-        self.adj[xu,yu].append(self.nodes[xu][yu])
-        self.adj[xv,yv].append(self.nodes[xv][yv])
-        # self.adj[u].append(self.nodes[xu][yu])
-        # self.adj[v].append(self.nodes[xv][yv])
-
-    # def add_edges(self):
-    #     for i in range(self.size-1):
-    #         for j in range(self.size-1):
-    #             self.adj[(i,j)].append(self.nodes[i][j+1])
-    #             self.adj[(i,j+1)].append(self.nodes[i][j])
-    #             self.adj[(j,i)].append(self.nodes[j][i+1])
-    #             self.adj[(j,i+1)].append(self.nodes[j][i])
-            
-    # def insert_piece(self, position, piece):
-    #     # Implementar para inserir o atributo 'is_black_piece' no node de posição 'position'
-    #     if not self.nodes[position.i][position.j].is_black_piece:    
-    #         self.nodes[position.i][position.j].is_black_piece = True
-    #         self.nodes[position.i][position.j].piece = piece
-        
-    #         self.fill_attacked(self.nodes[position.i][position.j])
-
-    # def fill_attacked(self, node):
-    #     # Preenche com attacked os nós em que a posição esteja dentro dos possíveis ataques da peça 'piece'
-    #     t
-            
-    # def add_black_pieces(self, n_pecas):
-    #     # Adiciona todas as N peças pedidas
-    #     for k in range(n_pecas):
-    #         i, j = map(int, input().split())
-    #         piece = input()
-    #         self.insert_piece(0, (i, j), piece)
-
-    # def process(self):
-    #     king_pos = self.add_white_king()
-
-    #     finalX, finalY = map(int, input().split())
-
-    #     return self.is_path_safe(king_pos, (finalX, finalY))
-
-    # def add_white_king(self):
-    #     # adicionar o rei branco ao tabuleiro
-    #     king_posX, king_posY = map(int, input().split())
-        
-    #     # if para verificar se é possível inserir o rei
-    #     if ():
-    #         t
-
-    #     return ((king_posX, king_posY))
-        
-    # def is_path_safe(self, start_position, end_position):
-    #     # dijkstra modificado para encontrar o caminho mais seguro
-    #     dijkstra()
+        self.adj[(xu,yu)].append(self.nodes[yv][xv])
+        self.adj[(xv,yv)].append(self.nodes[yu][xu])
 
 
-def dijkstra(graph, starting_vertex):
-    distances = {node: float('infinity') for node_dict in graph.nodes for node in node_dict.values()}
-    distances[starting_vertex] = 0
-    previous = {node: None for node_dict in graph.nodes for node in node_dict.values()}
-    
-    pq = [(0, starting_vertex)]
-    while len(pq) > 0:
-        current_distance, current_vertex = heapq.heappop(pq)
-
-        # Nodes can get added to the priority queue multiple times. We only
-        # process a vertex the first time we remove it from the priority queue.
-        if current_distance > distances[current_vertex]:
-            continue
-
-        for neighbor_node in graph.adj[current_vertex]:
-            distance = current_distance + 1  # Assuming all edges have weight 1
-
-            # Only consider this new path if it's better than any path we've
-            # already found.
-            if distance < distances[neighbor_node]:
-                distances[neighbor_node] = distance
-                previous[neighbor_node] = current_vertex
-                heapq.heappush(pq, (distance, neighbor_node))
-
-    return distances, previous
-
-#     return distances
 # def dijkstra(graph, starting_vertex):
-#     distances = {node: float('infinity') for node_dict in graph.nodes for node in node_dict.values()}
+#     x, y = starting_vertex
+#     # node_indices = {(node.position): i for i, node_list in enumerate(graph.nodes) for node in node_list}
+#     distances = {node: float('infinity') for node_list in graph.nodes for node in node_list}
 #     distances[starting_vertex] = 0
 
 #     pq = [(0, starting_vertex)]
 #     while len(pq) > 0:
 #         current_distance, current_vertex = heapq.heappop(pq)
 
-#         # Nodes can get added to the priority queue multiple times. We only
-#         # process a vertex the first time we remove it from the priority queue.
 #         if current_distance > distances[current_vertex]:
 #             continue
 
-#         current_node = (graph.nodes[current_vertex])
-#         for neighbor in graph.adj[current_node.position]:
-#             neighbor_position = neighbor.position
+#         for neighbor_node in graph.adj[current_vertex]:
+#             neighbor_position = neighbor_node.position
+
 #             distance = current_distance + 1
 
-#             # Only consider this new path if it's better than any path we've
-#             # already found.
 #             if distance < distances[neighbor_position]:
 #                 distances[neighbor_position] = distance
 #                 heapq.heappush(pq, (distance, neighbor_position))
 
 #     return distances
+def dijkstra(graph, starting_vertex):
+    x, y = starting_vertex
+    distances = {node.position: float('infinity') for node_list in graph.nodes for node in node_list}
+    distances[starting_vertex] = 0
+
+    pq = [(0, starting_vertex)]
+    while pq:
+        current_distance, current_vertex = heapq.heappop(pq)
+
+        if current_distance > distances[current_vertex]:
+            continue
+
+        for neighbor_node in graph.adj[current_vertex]:
+            neighbor_position = neighbor_node.position
+
+            # Calculate the distance by adding the weight of the neighbor node
+            distance = current_distance + neighbor_node.weight
+
+            if distance < distances[neighbor_position]:
+                distances[neighbor_position] = distance
+                heapq.heappush(pq, (distance, neighbor_position))
+
+    return distances
 
 def create_chessboard_graph(n, non_edges):
     chessboard = Graph(n)
@@ -140,16 +83,16 @@ def create_chessboard_graph(n, non_edges):
     # chessboard.add(positions)
 
     for position in positions:
-        if(position not in non_edges):
+        if position not in positions:
             i, j = position
             neighbors = [
                 (i-1, j), (i+1, j), (i, j-1), (i, j+1),
                 (i-1, j-1), (i-1, j+1), (i+1, j-1), (i+1, j+1)
             ]
-            valid_neighbors = [(x, y) for (x, y) in neighbors if 0 <= x < n and 0 <= y < n]
-    for neighbor in valid_neighbors:
-        chessboard.add_edge(position, neighbor)
-    # MODIFICAR ADD_EDGES
+            valid_neighbors = [(x, y) for (x, y) in neighbors if 0 < x < n and 0 < y < n]
+            for neighbor in valid_neighbors:
+                if(neighbor not in non_edges):
+                    chessboard.add_edge(position, neighbor)
     return chessboard
     
 def torre_positions(x, y, n): 
@@ -239,7 +182,7 @@ def main():
                     non_edges.append(i)
 
             white_pieces.append((x, y))
-            non_edges.append(piece)
+            non_edges.append((x,y))
         except: 
             print("Entre com um número")
             exit(0)
@@ -247,16 +190,17 @@ def main():
     black_king = tuple(map(int, input("Digite a posição do rei preto (x y):").split()))
 
     black_dest = tuple(map(int, input("Digite a posição de destino do rei preto (x y): ").split()))
-
+    # print(non_edges)
     chessboard = create_chessboard_graph(n, non_edges)
     # display_chessboard(chessboard, white_pieces, black_king, black_dest)
     # print(chessboard.__dict__) 
-    # _ , path = dijkstra(chessboard, black_king)
-    # if path is None:
-    #     print("Fim de Jogo: O Rei está em perigo!")
-    # else:
-    #     print("Caminho seguro encontrado:")
-    #     print(path)
+    # print(chessboard.adj)
+    path = dijkstra(chessboard, black_king)
+    if path is None:
+        print("Fim de Jogo: O Rei está em perigo!")
+    else:
+        print("Caminho seguro encontrado:")
+        print(path)
     
     # G = Graph(size)
     # n_pecas = int(input())
