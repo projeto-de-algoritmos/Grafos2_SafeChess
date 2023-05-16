@@ -40,8 +40,8 @@ E iniciar inserindo os seus valores.
 Seguindo o explicado anteriormente, no tópico Sobre, o jogador primeiro irá definir o tamanho do tabuleiro **N**, o inserindo na entrada.
 Logo após, o jogador poderá escolher o número de peças do time branco. Após inserir esse número, o jogador irá inserir suas posições, juntamente ao tipo de peça que será inserido determinado pelo seu nome, dentro de algumas opções disponibilizadas. 
 
-Após a inserção dessas posições, o jogador poderá escolher qual seria a posição em que o rei do time preto se encontra. Caso essa posição já esteja sob ataque de alguma peça do time inimigo, o jogo já se encerra, retornando "Fim de Jogo".
+Após a inserção dessas posições, o jogador poderá escolher qual seria a posição em que o rei do time preto se encontra. 
 
 O jogador agora deverá inserir qual seria a posição de destino do rei.
 
-Por fim, o jogo irá retornar se esse caminho seria possível, e, caso for, retornará qual é esse caminho, demonstrando as casas do tabuleiro de xadrez as quais o rei passou para alcançar seu destino.
+Por fim, o jogo irá retornar se esse caminho seria possível, e, caso for, retornará qual é esse caminho, demonstrando as casas do tabuleiro de xadrez as quais o rei passou para alcançar seu destino. Caso não for, retornará "Fim de Jogo".
