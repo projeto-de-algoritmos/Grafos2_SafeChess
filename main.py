@@ -88,8 +88,8 @@ def rook_positions(position, white_pieces, n):
 
     return moves
 
-def pond_positions(x, y):
-    i, j = x, y
+def pond_positions(position):
+    i, j = position
     moves = [
         (i-1, j-1), (i+1, j-1)
     ]
