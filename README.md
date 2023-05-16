@@ -18,7 +18,12 @@ Adicione 3 ou mais screenshots do projeto em funcionamento.
 ## Instalação 
 **Linguagem**: Python<br>
 **Framework**: --<br>
-Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
+
+Para rodar o projeto basta rodar o arquivo python com o comando: 
+
+```python main.py```
+
+E iniciar inserindo os seus valores. 
 
 ## Uso 
 Seguindo o explicado anteriormente, no tópico Sobre, o jogador primeiro irá definir o tamanho do tabuleiro **N**, de no mínimo 4, o inserindo na entrada.
