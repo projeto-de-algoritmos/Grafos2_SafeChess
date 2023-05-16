@@ -33,7 +33,6 @@ def dijkstra(graph, starting_vertex):
     pq = [(0, starting_vertex)]
     while pq:
         current_distance, current_vertex = heapq.heappop(pq)
-        print(current_distance, current_vertex)
 
         if current_distance > distances[current_vertex]:
             continue
@@ -145,7 +144,7 @@ def bishop_positions(position, white_pieces, n):
 
     return moves
 
-def rainha_positions(position, white_pieces, n):
+def queen_positions(position, white_pieces, n):
     moves = []
     rook = rook_positions(position, white_pieces, n)
     bishop = bishop_positions(position, white_pieces, n)
@@ -166,7 +165,8 @@ def main():
                 "1. Torre\n"+
                 "2. Bispo\n"+
                 "3. Cavalo\n"+
-                "4. Peão\n"
+                "4. Peão\n"+
+                "5. Rainha\n"
             ))
 
             white_pieces.append((piece, (x, y)))
@@ -176,17 +176,20 @@ def main():
             exit(0)
 
     for white_piece in white_pieces:
-        if(piece==1):
-            for i in rook_positions(white_piece, white_pieces, n): 
+        if(white_piece[0]==1):
+            for i in rook_positions(white_piece[1], white_pieces, n): 
                 non_edges.append(i)
-        elif(piece==2):
-            for i in bishop_positions(white_piece, white_pieces, n): 
+        elif(white_piece[0]==2):
+            for i in bishop_positions(white_piece[1], white_pieces, n): 
                 non_edges.append(i)
-        elif(piece==3):
-            for i in get_horse_positions(white_piece, white_pieces, n):
+        elif(white_piece[0]==3):
+            for i in get_horse_positions(white_piece[1], white_pieces, n):
                 non_edges.append(i)
-        elif(piece==4):
-            for i in pond_positions(white_piece): 
+        elif(white_piece[0]==4):
+            for i in pond_positions(white_piece[1]): 
+                non_edges.append(i)
+        elif(white_piece[0]==5):
+            for i in queen_positions(white_piece[1], white_pieces, n): 
                 non_edges.append(i)
         
     black_king = tuple(map(int, input("Digite a posição do rei preto (x y):").split()))
