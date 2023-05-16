@@ -15,9 +15,7 @@ class Graph(object):
             node_list = []
             for j in range(size):
                 node = Node((i,j))
-                # node_list[j] = node
                 node_list.append(node)
-                # node_list.append((i,j))
             self.nodes.append(node_list)
 
     def add_edge(self, u, v): 
@@ -26,37 +24,12 @@ class Graph(object):
         self.adj[(xu,yu)].append(self.nodes[yv][xv])
         self.adj[(xv,yv)].append(self.nodes[yu][xu])
 
-
-# def dijkstra(graph, starting_vertex):
-#     x, y = starting_vertex
-#     # node_indices = {(node.position): i for i, node_list in enumerate(graph.nodes) for node in node_list}
-#     distances = {node: float('infinity') for node_list in graph.nodes for node in node_list}
-#     distances[starting_vertex] = 0
-
-#     pq = [(0, starting_vertex)]
-#     while len(pq) > 0:
-#         current_distance, current_vertex = heapq.heappop(pq)
-
-#         if current_distance > distances[current_vertex]:
-#             continue
-
-#         for neighbor_node in graph.adj[current_vertex]:
-#             neighbor_position = neighbor_node.position
-
-#             distance = current_distance + 1
-
-#             if distance < distances[neighbor_position]:
-#                 distances[neighbor_position] = distance
-#                 heapq.heappush(pq, (distance, neighbor_position))
-
-#     return distances
 def dijkstra(graph, starting_vertex):
     x, y = starting_vertex
     distances = {(node.position): float('infinity') for node_list in graph.nodes for node in node_list}
-    print(distances)
     distances[starting_vertex] = 0
-    print(distances)
 
+    visited = {}
     pq = [(0, starting_vertex)]
     while pq:
         current_distance, current_vertex = heapq.heappop(pq)
@@ -64,26 +37,25 @@ def dijkstra(graph, starting_vertex):
 
         if current_distance > distances[current_vertex]:
             continue
-
         for neighbor_node in graph.adj[current_vertex]:
             neighbor_position = neighbor_node.position
 
-            # Calculate the distance by adding the weight of the neighbor node
             distance = current_distance + neighbor_node.weight
 
             if distance < distances[neighbor_position]:
                 distances[neighbor_position] = distance
+                visited[neighbor_node.position] = current_vertex
                 heapq.heappush(pq, (distance, neighbor_position))
 
-    return distances
+    return distances, visited
+
 
 def create_chessboard_graph(n, non_edges):
     chessboard = Graph(n)
     positions = [(i, j) for i in range(n) for j in range(n)]
-    # chessboard.add(positions)
 
     for position in positions:
-        if position not in positions:
+        if position not in non_edges:
             i, j = position
             neighbors = [
                 (i-1, j), (i+1, j), (i, j-1), (i, j+1),
@@ -220,23 +192,22 @@ def main():
     black_king = tuple(map(int, input("Digite a posição do rei preto (x y):").split()))
 
     black_dest = tuple(map(int, input("Digite a posição de destino do rei preto (x y): ").split()))
-    # print(non_edges)
     chessboard = create_chessboard_graph(n, non_edges)
-    # display_chessboard(chessboard, white_pieces, black_king, black_dest)
-    # print(chessboard.__dict__) 
-    # print(chessboard.adj)
-    path = dijkstra(chessboard, black_king)
-    if path is None:
+
+    distance, path = dijkstra(chessboard, black_king)
+    response = []
+    no = black_dest
+    while(no != black_king): 
+        response.append(no)
+        no = path[no]
+    response.append(black_king)
+
+    if distance[black_dest] is float('infinity'):
         print("Fim de Jogo: O Rei está em perigo!")
     else:
-        print("Caminho seguro encontrado:")
-        print(path)
-    
-    # G = Graph(size)
-    # n_pecas = int(input())
-    # G.add_black_pieces(n_pecas)
-    
-    # print(G.process())    
+        print("\n------------------ Caminho seguro encontrado: ------------------\n")
+        print(f"O rei pode chegar em segurança em {distance[black_dest]} movimentos, sendo eles:")
+        print(response[::-1])
 
 if __name__ == '__main__': 
     main()
