@@ -192,7 +192,7 @@ def main():
             for i in queen_positions(white_piece[1], white_pieces, n): 
                 non_edges.append(i)
         
-    black_king = tuple(map(int, input("Digite a posição do rei preto (x y):").split()))
+    black_king = tuple(map(int, input("Digite a posição do rei preto (x y): ").split()))
 
     black_dest = tuple(map(int, input("Digite a posição de destino do rei preto (x y): ").split()))
     chessboard = create_chessboard_graph(n, non_edges)
