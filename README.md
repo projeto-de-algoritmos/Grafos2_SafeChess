@@ -6,8 +6,8 @@
 ## Alunos
 |Matrícula | Aluno |
 | -- | -- |
-| 20/013181  |  Adne Moretti Moreira |
-| 20/018205  |  Gabriel Moretti de Souza |
+| 20/0013181  |  Adne Moretti Moreira |
+| 20/0018205  |  Gabriel Moretti de Souza |
 
 ## Sobre
 Esse projeto tem como objetivo realizar um pequeno jogo, em que o jogador terá um tabuleiro de xadrez de tamanho alterável, onde poderá escolher a posição de algumas peças do time branco e irá visualizar um caminho seguro para o rei percorrer sem estar sob ataque dessas peças. O destino e início do caminho do rei são também definidos pelo jogador. Neste jogo as peças do time branco não poderão se mover.
