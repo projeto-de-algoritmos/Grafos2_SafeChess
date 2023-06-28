@@ -20,7 +20,7 @@ Esse projeto tem como objetivo realizar um pequeno jogo, em que o jogador terá 
 
 ## Vídeo
 
-[https://youtu.be/Z9l9epaKuWE](https://youtu.be/Z9l9epaKuWE)
+O vídeo se encontra no diretório principal desse repositório, em formato ".mp4".
 
 ## Instalação 
 **Linguagem**: Python<br>
